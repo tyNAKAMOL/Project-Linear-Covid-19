@@ -34,60 +34,99 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late List<ExpenseData> _chartData;
+  @override
+  void initState() {
+    _chartData = getChartData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            // ignore: prefer_const_literals_to_create_immutables
-            colors: [
-              // Color(0xFF2C1843),
-              Color(0xFF00A5E5),
-              Color(0xFFEFFBFF),
-              // Color(0xFFFFFFFF),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                height: 550,
-                child: SfCartesianChart(
-                  title: ChartTitle(text: "Data"),
-                  primaryXAxis: NumericAxis(
-                    title: AxisTitle(text: "x"),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              // ignore: prefer_const_literals_to_create_immutables
+              colors: [
+                // Color(0xFF2C1843),
+                Color(0xFF00A5E5),
+                Color(0xFFEFFBFF),
+                // Color(0xFFFFFFFF),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: 550,
+                  child: SfCartesianChart(
+                    title: ChartTitle(text: "Data"),
+                    legend: Legend(isVisible: true),
+                    tooltipBehavior: TooltipBehavior(
+                        enable: true, activationMode: ActivationMode.longPress),
+                    series: <ChartSeries>[
+                      LineSeries<ExpenseData, String>(
+                          dataSource: _chartData,
+                          xValueMapper: (ExpenseData exp, _) =>
+                              exp.expenseCategory,
+                          yValueMapper: (ExpenseData exp, _) => exp.infected,
+                          name: 'Infected'),
+                      LineSeries<ExpenseData, String>(
+                          dataSource: _chartData,
+                          xValueMapper: (ExpenseData exp, _) =>
+                              exp.expenseCategory,
+                          yValueMapper: (ExpenseData exp, _) => exp.cured,
+                          name: "cured"),
+                      LineSeries<ExpenseData, String>(
+                          dataSource: _chartData,
+                          xValueMapper: (ExpenseData exp, _) =>
+                              exp.expenseCategory,
+                          yValueMapper: (ExpenseData exp, _) => exp.death,
+                          name: "death"),
+                      LineSeries<ExpenseData, String>(
+                          dataSource: _chartData,
+                          xValueMapper: (ExpenseData exp, _) =>
+                              exp.expenseCategory,
+                          yValueMapper: (ExpenseData exp, _) => exp.vaccined,
+                          name: 'vaccined'),
+                    ],
+                    primaryXAxis: CategoryAxis(),
                   ),
-                  primaryYAxis: NumericAxis(
-                      title: AxisTitle(text: "y"), labelFormat: "{value} M"),
-                  legend: Legend(isVisible: true),
-                  tooltipBehavior: TooltipBehavior(
-                      enable: true, activationMode: ActivationMode.longPress),
-                  series: <ChartSeries>[
-                    LineSeries<SalesData, double>(
-                      dataSource: getColumnData(),
-                      xValueMapper: (SalesData sales, _) => sales.x,
-                      yValueMapper: (SalesData sales, _) => sales.y,
-                      name: "ty",
-                      legendIconType: LegendIconType.diamond,
-                      dataLabelSettings: DataLabelSettings(isVisible: true),
-                    ),
-                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  List<ExpenseData> getChartData() {
+    const x = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
+    final List<ExpenseData> chartData = <ExpenseData>[];
+    for (int i = 0; i < x.length; i++) {
+      chartData.add(ExpenseData(
+          x[i], 43 + (i * 10), 23 + (i * 10), 20 + (i * 10), 34 + (i * 10)));
+    }
+    // ExpenseData('Food', 55, 40, 45, 48),
+
+    // ExpenseData('Transport', 33, 45, 54, 28),
+    // ExpenseData('Medical', 43, 23, 20, 34),
+    // ExpenseData('Clothes', 32, 54, 23, 54),
+    // ExpenseData('Book', 56, 18, 43, 55),
+    // ExpenseData('Other', 23, 54, 33, 56),
+
+    return chartData;
   }
 }
 
@@ -119,4 +158,14 @@ dynamic getHugeData() {
     hugeData.add(SalesData(i.toDouble(), value));
   }
   return hugeData;
+}
+
+class ExpenseData {
+  ExpenseData(this.expenseCategory, this.infected, this.cured, this.death,
+      this.vaccined);
+  final String expenseCategory;
+  final num infected;
+  final num cured;
+  final num death;
+  final num vaccined;
 }
