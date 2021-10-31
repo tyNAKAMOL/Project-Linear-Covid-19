@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, use_key_in_widget_constructors
+// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, use_key_in_widget_constructors, must_call_super
 
 import 'dart:math';
 import 'package:covid_app/Menu.dart';
@@ -23,38 +23,99 @@ const _credentials = r'''
 
 const _spreadsheetId = '16nMmHdCr80dghW7NDhsyTgq1NWSSimWhq_baCONspYo';
 String value = "";
-String check = "";
+bool _visible = false;
+String output1 = "";
+String output2 = "";
+String output3 = "";
+String data = "";
 
 class GraphPage extends StatefulWidget {
   final int row;
   final int p;
-  const GraphPage({required this.p, required this.row});
+  const GraphPage(
+      {required this.p,
+      required this.row,
+      required String huakor,
+      required String samakan,
+      required String kampud});
 
   @override
   _GraphPageState createState() => _GraphPageState();
 }
 
 class _GraphPageState extends State<GraphPage> {
-  late String data;
   late String t;
   // ignore: unused_field
-  late List<ExpenseData> _chartData;
 
-  @override
-  void initState() {
-    _chartData = getChartData();
-    super.initState();
+  createAlertDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Data"),
+            content: TextField(
+                keyboardType: TextInputType.numberWithOptions(
+                    signed: false, decimal: false),
+                onChanged: (value) {
+                  data = value.trim();
+                },
+                cursorColor: Colors.white,
+                decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.purple),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.purple),
+                  ),
+                  labelText: "Input",
+                  labelStyle: TextStyle(color: Colors.purple),
+                  hintText: "Input data here",
+                )),
+            actions: <Widget>[
+              MaterialButton(
+                  elevation: 5.0,
+                  child: Text('Enter'),
+                  onPressed: () {
+                    InputData(data.toString(), widget.row);
+                    Future.delayed(const Duration(milliseconds: 2000),
+                        () async {
+                      _visible = true;
+                      Navigator.pop(context);
+                      final gsheets = GSheets(_credentials);
+                      final _sheet = await gsheets.spreadsheet(_spreadsheetId);
+                      var sheet = _sheet.worksheetByTitle('Page1');
+                      final cell1 =
+                          await sheet!.cells.cell(column: 6, row: widget.row);
+                      output1 = cell1.value;
+                      final cell2 =
+                          await sheet.cells.cell(column: 7, row: widget.row);
+                      output2 = cell2.value;
+                      final cell3 =
+                          await sheet.cells.cell(column: 3, row: widget.row);
+                      output3 = cell3.value;
+                      setState(() {});
+                    });
+                  }),
+            ],
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Color(0xFF2C1843),
           leading: IconButton(
             onPressed: () {
+              output1 = "";
+              output2 = "";
+              output3 = "";
+              data = "";
+              _visible = false;
               Navigator.pop(context);
             },
             icon: const Icon(
@@ -66,184 +127,127 @@ class _GraphPageState extends State<GraphPage> {
         ),
         body: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              // ignore: prefer_const_literals_to_create_immutables
-              colors: [
-                Color(0xFF9B59B6),
-                Color(0xFFEC7063),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+              color: Colors.transparent,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage("assets/Logo-Covid19_2.png"),
+              )),
           child: Center(
-            child: Column(children: [
-              Center(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Wrap(
-                        spacing: 50,
-                        children: <Widget>[
-                          Image.asset(
+            child: Column(
+              children: [
+                Spacer(),
+                // Wrap(spacing: 20, children: <Widget>[
+                Center(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Wrap(
+                        // children: <Widget>[
+                        Container(
+                          height: 500,
+                          decoration: BoxDecoration(
+                            color: Colors.amber[300],
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: Image.asset(
                               "assets/P${widget.p}_ROW${widget.row}.png"),
+                        ),
+                        // Image.asset(
+                        //     "assets/P${widget.p}_ROW${widget.row}.png"),
+                        // ],
+                      ]),
+                ),
+                Spacer(),
+                Center(
+                  child: Container(
+                    height: 150,
+                    width: 850,
+                    decoration: BoxDecoration(
+                      // color: Colors.amber,
+                      color: Color(0xFFEC7063),
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    // setState(){
+
+                    // }
+                    // ignore: unnecessary_brace_in_string_interps
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Opacity(
+                            opacity: 0.0,
+                            child: Image.asset(
+                              "assets/Animation.gif",
+                              width: 18,
+                              height: 18,
+                            ),
+                          ),
+                          Center(
+                              child: Text(
+                            "จากกราฟความสัมพันธ์ระหว่าง${huakor}",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                          Center(
+                              child: Text(
+                            "คำนวนได้จากสมการ ${samakan}",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                          Center(
+                              child: Text(
+                            "${kampud}",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                          Center(
+                              // ignore: unnecessary_brace_in_string_interps
+                              child: Opacity(
+                            opacity: _visible ? 1.0 : 0.0,
+                            child: Text(
+                              "${output1} ${data} คน ${output2} ${output3} คน",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )),
                         ],
                       ),
-                    ]),
-              ),
-              TextField(
-                cursorColor: Colors.white,
-                decoration: const InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  labelText: "Input",
-                  labelStyle: TextStyle(color: Colors.white),
-                  hintText: "Input data here",
                 ),
-                keyboardType: TextInputType.numberWithOptions(
-                    signed: false, decimal: false),
-                onChanged: (value) {
-                  data = value.trim();
-                },
-              ),
-              ElevatedButton.icon(
-                  onPressed: () {
-                    InputData(data.toString(), 2);
-                    Future.delayed(const Duration(milliseconds: 2000),
-                        () async {
-                      final gsheets = GSheets(_credentials);
-                      final _sheet = await gsheets.spreadsheet(_spreadsheetId);
-                      var sheet = _sheet.worksheetByTitle('Page1');
-                      value = await sheet!.values.value(column: 3, row: 2);
-                      setState(() {});
-                    });
-                  },
-                  icon: Icon(Icons.add_box_outlined),
-                  label: Text(
-                    "Enter",
-                    style: TextStyle(fontSize: 20),
-                  )),
-              // ElevatedButton.icon(
-              //     onPressed: () async {
-              //       print(value);
-
-              //       setState(() {});
-              //     },
-              //     icon: Icon(Icons.download),
-              //     label: Text(
-              //       "Download",
-              //       style: TextStyle(fontSize: 20),
-              //     )),
-              Text(widget.row.toString()),
-              Text(widget.p.toString()),
-            ]),
-
-            // child: Center(
-            //   child: Column(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: <Widget>[
-            //       Container(
-            //         height: 550,
-            //         child: SfCartesianChart(
-            //           title: ChartTitle(text: "Data"),
-            //           legend: Legend(isVisible: true),
-            //           tooltipBehavior: TooltipBehavior(
-            //               enable: true, activationMode: ActivationMode.longPress),
-            //           series: <ChartSeries>[
-            //             LineSeries<ExpenseData, String>(
-            //                 dataSource: _chartData,
-            //                 xValueMapper: (ExpenseData exp, _) =>
-            //                     exp.expenseCategory,
-            //                 yValueMapper: (ExpenseData exp, _) => exp.infected,
-            //                 name: 'Infected'),
-            //             LineSeries<ExpenseData, String>(
-            //                 dataSource: _chartData,
-            //                 xValueMapper: (ExpenseData exp, _) =>
-            //                     exp.expenseCategory,
-            //                 yValueMapper: (ExpenseData exp, _) => exp.cured,
-            //                 name: "cured"),
-            //             LineSeries<ExpenseData, String>(
-            //                 dataSource: _chartData,
-            //                 xValueMapper: (ExpenseData exp, _) =>
-            //                     exp.expenseCategory,
-            //                 yValueMapper: (ExpenseData exp, _) => exp.death,
-            //                 name: "death"),
-            //             LineSeries<ExpenseData, String>(
-            //                 dataSource: _chartData,
-            //                 xValueMapper: (ExpenseData exp, _) =>
-            //                     exp.expenseCategory,
-            //                 yValueMapper: (ExpenseData exp, _) => exp.vaccined,
-            //                 name: 'vaccined'),
-            //           ],
-            //           primaryXAxis: CategoryAxis(),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
+                Spacer(),
+                Center(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      OutputData(widget.row);
+                      createAlertDialog(context);
+                    },
+                    icon: Icon(Icons.add_box_outlined),
+                    style: ElevatedButton.styleFrom(primary: Color(0xFF2C1843)),
+                    label: Text(
+                      "Input Data",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
+                Spacer(),
+              ],
+            ),
           ),
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-}
-
-List<ExpenseData> getChartData() {
-  const x = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
-  final List<ExpenseData> chartData = <ExpenseData>[];
-  for (int i = 0; i < x.length; i++) {
-    chartData.add(ExpenseData(
-        x[i], 43 + (i * 10), 23 + (i * 10), 20 + (i * 10), 34 + (i * 10)));
-  }
-
-  return chartData;
-}
-
-class SalesData {
-  double x, y;
-  SalesData(this.x, this.y);
-}
-
-dynamic getColumnData() {
-  List<SalesData> columnData = <SalesData>[
-    SalesData(10, 20),
-    SalesData(20, 30),
-    SalesData(30, 10),
-    SalesData(40, 20),
-  ];
-  return columnData;
-}
-
-dynamic getHugeData() {
-  List<SalesData> hugeData = <SalesData>[];
-  double value = 100;
-  // ignore: unnecessary_new
-  Random rand = new Random();
-  for (int i = 0; i < 1000; i++) {
-    if (rand.nextDouble() > 0.5) {
-      value += rand.nextDouble();
-    } else {
-      value -= rand.nextDouble();
-    }
-    hugeData.add(SalesData(i.toDouble(), value));
-  }
-  return hugeData;
-}
-
-class ExpenseData {
-  ExpenseData(this.expenseCategory, this.infected, this.cured, this.death,
-      this.vaccined);
-  final String expenseCategory;
-  final num infected;
-  final num cured;
-  final num death;
-  final num vaccined;
 }
 
 void InputData(String data, int roll) async {
@@ -259,12 +263,4 @@ void OutputData(int roll) async {
   var sheet = _sheet.worksheetByTitle('Page1');
   final cell = await sheet!.cells.cell(column: 3, row: roll);
   value = cell.value;
-}
-
-void Check(int roll) async {
-  final gsheets = GSheets(_credentials);
-  final _sheet = await gsheets.spreadsheet(_spreadsheetId);
-  var sheet = _sheet.worksheetByTitle('Page1');
-  final cell = await sheet!.cells.cell(column: 2, row: roll);
-  check = cell.value;
 }
