@@ -34,7 +34,9 @@ class MenuPage extends StatefulWidget {
   final Color color2;
   const MenuPage(
       {this.color1 = const Color(0xFFEC7063),
+      // Colors.transparent
       Color this.color2 = const Color(0xFF9B59B6),
+      // Color this.color2 = const Color(0xFF9B59B6),
       required this.p,
       required this.row});
 
@@ -79,6 +81,11 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Color(0xFF2C1843),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(30),
+                ),
+              ),
               leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(

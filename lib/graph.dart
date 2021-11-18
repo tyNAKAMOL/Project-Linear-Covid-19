@@ -126,124 +126,165 @@ class _GraphPageState extends State<GraphPage> {
           title: Text("Back"),
         ),
         body: Container(
-          decoration: BoxDecoration(
-              color: Colors.transparent,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage("assets/Logo-Covid19_2.png"),
-              )),
-          child: Center(
-            child: Column(
-              children: [
-                Spacer(),
-                // Wrap(spacing: 20, children: <Widget>[
-                Center(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Wrap(
-                        // children: <Widget>[
-                        Container(
-                          height: 500,
-                          decoration: BoxDecoration(
-                            color: Colors.amber[300],
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          child: Image.asset(
-                              "assets/P${widget.p}_ROW${widget.row}.png"),
-                        ),
-                        // Image.asset(
-                        //     "assets/P${widget.p}_ROW${widget.row}.png"),
-                        // ],
-                      ]),
-                ),
-                Spacer(),
-                Center(
-                  child: Container(
-                    height: 150,
-                    width: 850,
-                    decoration: BoxDecoration(
-                      // color: Colors.amber,
-                      color: Color(0xFFEC7063),
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    // setState(){
-
-                    // }
-                    // ignore: unnecessary_brace_in_string_interps
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Opacity(
-                            opacity: 0.0,
-                            child: Image.asset(
-                              "assets/Animation.gif",
-                              width: 18,
-                              height: 18,
-                            ),
-                          ),
-                          Center(
-                              child: Text(
-                            "จากกราฟความสัมพันธ์ระหว่าง${huakor}",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
-                          Center(
-                              child: Text(
-                            "คำนวนได้จากสมการ ${samakan}",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
-                          Center(
-                              child: Text(
-                            "${kampud}",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
-                          Center(
-                              // ignore: unnecessary_brace_in_string_interps
-                              child: Opacity(
-                            opacity: _visible ? 1.0 : 0.0,
-                            child: Text(
-                              "${output1} ${data} คน ${output2} ${output3} คน",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                // ignore: prefer_const_literals_to_create_immutables
+                stops: [0.1, 0.3, 0.75],
+                // ignore: prefer_const_literals_to_create_immutables
+                colors: [
+                  // Color(0xFF2C1843),
+                  Color(0xFF1BA7E3),
+                  Color(0xFF7E46FD),
+                  Color(0xFF020546),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: Center(
+              // ignore: avoid_unnecessary_containers
+              child: Container(
+                color: Colors.white,
+                width: 800,
+                height: 800,
+                child: Column(
+                  children: [
+                    Spacer(),
+                    // Wrap(spacing: 20, children: <Widget>[
+                    Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Wrap(
+                            // children: <Widget>[
+                            // ignore: avoid_unnecessary_containers
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(
+                                    30), //border corner radius
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.purple
+                                        .withOpacity(0.7), //color of shadow
+                                    spreadRadius: 5, //spread radius
+                                    blurRadius: 7, // blur radius
+                                    offset: Offset(
+                                        0, 2), // changes position of shadow
+                                    //first paramerter of offset is left-right
+                                    //second parameter is top to down
+                                  ),
+                                  //you can set more BoxShadow() here
+                                ],
                               ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.asset(
+                                  "assets/P${widget.p}_ROW${widget.row}.png",
+                                  // height: 500,
+                                ),
+                              ),
+                              // height: 500,
+                              // decoration: BoxDecoration(
+                              //   color: Colors.amber[300],
+                              //   borderRadius: BorderRadius.circular(40),
+                              // ),
+                              // child: Image.asset(
+                              //     "assets/P${widget.p}_ROW${widget.row}.png"),
                             ),
-                          )),
-                        ],
+                            // Image.asset(
+                            //     "assets/P${widget.p}_ROW${widget.row}.png"),
+                            // ],
+                          ]),
+                    ),
+                    // Spacer(),
+                    Center(
+                      child: Container(
+                        height: 150,
+                        width: 850,
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Opacity(
+                                opacity: 0.0,
+                                child: Image.asset(
+                                  "assets/Animation.gif",
+                                  width: 18,
+                                  height: 18,
+                                ),
+                              ),
+                              Center(
+                                  child: Text(
+                                "จากกราฟความสัมพันธ์ระหว่าง${huakor}",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF020546)),
+                              )),
+                              Center(
+                                  child: Text(
+                                "คำนวนได้จากสมการ ${samakan}",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF020546)),
+                              )),
+                              Center(
+                                  child: Text(
+                                "${kampud}",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF020546)),
+                              )),
+                              Center(
+                                  // ignore: unnecessary_brace_in_string_interps
+                                  child: Opacity(
+                                opacity: _visible ? 1.0 : 0.0,
+                                child: Text(
+                                  "${output1} ${data} คน ${output2} ${output3} คน",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              )),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                Spacer(),
-                Center(
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      OutputData(widget.row);
-                      createAlertDialog(context);
-                    },
-                    icon: Icon(Icons.add_box_outlined),
-                    style: ElevatedButton.styleFrom(primary: Color(0xFF2C1843)),
-                    label: Text(
-                      "Input Data",
-                      style: TextStyle(fontSize: 20),
+                    Spacer(),
+                    Center(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          OutputData(widget.row);
+                          createAlertDialog(context);
+                        },
+                        icon: Icon(
+                          Icons.add_box_outlined,
+                          color: Colors.white,
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFF020546),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                        ),
+                        label: Text(
+                          "Input Data",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    Spacer(),
+                  ],
                 ),
-                Spacer(),
-              ],
-            ),
-          ),
-        ),
+              ),
+            )),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
