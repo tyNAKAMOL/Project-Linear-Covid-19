@@ -127,24 +127,15 @@ class _GraphPageState extends State<GraphPage> {
         ),
         body: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                // ignore: prefer_const_literals_to_create_immutables
-                stops: [0.1, 0.3, 0.75],
-                // ignore: prefer_const_literals_to_create_immutables
-                colors: [
-                  // Color(0xFF2C1843),
-                  Color(0xFF1BA7E3),
-                  Color(0xFF7E46FD),
-                  Color(0xFF020546),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
+                color: Colors.transparent,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage("assets/Logo-Covid19_2.png"),
+                )),
             child: Center(
               // ignore: avoid_unnecessary_containers
               child: Container(
-                color: Colors.white,
+                color: Colors.white.withOpacity(0.5),
                 width: 800,
                 height: 800,
                 child: Column(
@@ -167,7 +158,7 @@ class _GraphPageState extends State<GraphPage> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.purple
-                                        .withOpacity(0.7), //color of shadow
+                                        .withOpacity(0.9), //color of shadow
                                     spreadRadius: 5, //spread radius
                                     blurRadius: 7, // blur radius
                                     offset: Offset(

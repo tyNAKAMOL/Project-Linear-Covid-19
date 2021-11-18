@@ -37,6 +37,7 @@ dependencies:
   syncfusion_flutter_charts: ^19.3.47
   gsheets: ^0.3.2
   frino_icons: ^1.0.1+4
+  google_fonts: ^2.1.0
 
 dev_dependencies:
   flutter_test:

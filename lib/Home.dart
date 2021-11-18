@@ -1,7 +1,7 @@
-// ignore_for_file: file_names, avoid_unnecessary_containers, use_key_in_widget_constructors, prefer_const_constructors, type_init_formals, sized_box_for_whitespace
+// ignore_for_file: file_names, avoid_unnecessary_containers, use_key_in_widget_constructors, prefer_const_constructors, type_init_formals, sized_box_for_whitespace, prefer_final_fields
 
 import 'dart:ffi';
-
+// import 'dart:html';
 import 'package:covid_app/Menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,13 +56,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FadeTransition(
-                    opacity: animation,
-                    child: Image.asset(
-                      "assets/Logo-Covid19.png",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  AnimatedImage(),
+                  // FadeTransition(
+                  //   opacity: animation,
+                  //   child: Image.asset(
+                  //     "assets/Logo-Covid19.png",
+                  //     fit: BoxFit.cover,
+                  //   ),
+                  // ),
                   FadeTransition(
                     opacity: animation,
                     child: GestureDetector(
@@ -76,7 +77,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MenuPage(p: 1, row: 0)));
+                                builder: (context) => MenuPage(p: 0, row: 0)));
                         // Navigator.of(context).pushReplacement(MaterialPageRoute(
                         //   builder: (context) {
                         //     return MenuPage();
@@ -133,11 +134,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           // ignore: prefer_const_literals_to_create_immutables
                           children: [
                             Icon(
-                              Icons.add_moderator,
+                              Icons.analytics_outlined,
                               color: Colors.white,
                             ),
                             Text(
-                              "  phase 1",
+                              "  2 Variable",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -162,7 +163,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MenuPage(p: 2, row: 2)));
+                                builder: (context) => MenuPage(p: 0, row: 10)));
                         setState(() {
                           glowing2 = true;
                           scale2 = 1.1;
@@ -214,11 +215,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           // ignore: prefer_const_literals_to_create_immutables
                           children: [
                             Icon(
-                              Icons.add_moderator,
+                              Icons.analytics_outlined,
                               color: Colors.white,
                             ),
                             Text(
-                              "  phase 2",
+                              "  3 Variable",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -234,5 +235,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
           ),
         ));
+  }
+}
+
+class AnimatedImage extends StatefulWidget {
+  const AnimatedImage({Key? key}) : super(key: key);
+
+  @override
+  _AnimatedImageState createState() => _AnimatedImageState();
+}
+
+class _AnimatedImageState extends State<AnimatedImage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 1),
+  )..repeat(reverse: true);
+  // ignore: unused_field
+  late Animation<Offset> _animation = Tween(
+    begin: Offset.zero,
+    end: Offset(0, 0.04),
+  ).animate(_controller);
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: _animation,
+      child: Image.asset(
+        "assets/Logo-Covid19.png",
+      ),
+    );
   }
 }
