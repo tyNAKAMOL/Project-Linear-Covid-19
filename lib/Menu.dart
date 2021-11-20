@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:ffi';
 import 'package:gsheets/gsheets.dart';
 import 'package:covid_app/Home.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 
 const _credentials = r'''
 {
@@ -26,10 +27,19 @@ String samakan = "";
 String kampud = "";
 String huakor = "";
 bool _visible = false;
+bool check = false;
+bool loading = false;
 
 class MenuPage extends StatefulWidget {
+  void chackParameter(int y) {
+    if (y == 2) {
+      check = true;
+    }
+  }
+
   final int row;
   final int p;
+  final int para;
   final Color color1;
   final Color color2;
   const MenuPage(
@@ -37,9 +47,9 @@ class MenuPage extends StatefulWidget {
       // Colors.transparent
       Color this.color2 = const Color(0xFF9B59B6),
       // Color this.color2 = const Color(0xFF9B59B6),
+      required this.para,
       required this.p,
       required this.row});
-
   @override
   _MenuPageState createState() => _MenuPageState();
 }
@@ -57,6 +67,7 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
   var scale4 = 1.0;
   var glowing5 = true;
   var scale5 = 1.0;
+
   @override
   void initState() {
     controller = AnimationController(
@@ -81,11 +92,6 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Color(0xFF2C1843),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(30),
-                ),
-              ),
               leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -104,8 +110,6 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
             backgroundColor: Colors.transparent,
             body: Center(
               child: Container(
-                // width: MediaQuery.of(context).size.width / 1.5,
-                // height: MediaQuery.of(context).size.width / 3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -125,36 +129,126 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                                     scale1 = 1.0;
                                   });
                                 },
-                                onTapDown: (val) async {
-                                  _visible = true;
-                                  final gsheets = GSheets(_credentials);
-                                  final _sheet =
-                                      await gsheets.spreadsheet(_spreadsheetId);
-                                  var sheet = _sheet.worksheetByTitle('Page1');
-                                  final cell = await sheet!.cells
-                                      .cell(column: 1, row: widget.row + 2);
-                                  huakor = cell.value;
-                                  final cell2 = await sheet.cells
-                                      .cell(column: 4, row: widget.row + 2);
-                                  samakan = cell2.value;
-                                  final cell3 = await sheet.cells
-                                      .cell(column: 5, row: widget.row + 2);
-                                  kampud = cell3.value;
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => GraphPage(
-                                                p: widget.p,
-                                                row: widget.row + 2,
-                                                huakor: huakor,
-                                                samakan: samakan,
-                                                kampud: kampud,
-                                              )));
-                                  _visible = false;
-                                  setState(() {
-                                    glowing1 = true;
-                                    scale1 = 1.1;
-                                  });
+                                onTapDown: (val) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => AssetGiffyDialog(
+                                            image: Image.asset(
+                                              "assets/giphy2.gif",
+                                            ),
+                                            title: Text(
+                                              'เลือก phase',
+                                              style: TextStyle(
+                                                  fontSize: 30.0,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            description: Text(
+                                              'Phase 1 : ช่วง ม.ค. - มิ.ย.64\nPhase 2 : ช่วง มิ.ย. - ต.ค. 64',
+                                              textAlign: TextAlign.start,
+                                              style: TextStyle(
+                                                fontSize: 20.0,
+                                              ),
+                                            ),
+                                            entryAnimation:
+                                                EntryAnimation.DEFAULT,
+                                            buttonCancelText: Text("Phase 1"),
+                                            buttonCancelColor: Colors.green,
+                                            buttonOkColor: Colors.green,
+                                            buttonOkText: Text("Phase 2"),
+                                            onOkButtonPressed: () async {
+                                              _visible = true;
+                                              setState(() {
+                                                loading = true;
+                                              });
+                                              final gsheets =
+                                                  GSheets(_credentials);
+                                              final _sheet = await gsheets
+                                                  .spreadsheet(_spreadsheetId);
+                                              var sheet = _sheet
+                                                  .worksheetByTitle('Page1');
+                                              final cell = await sheet!.cells
+                                                  .cell(
+                                                      column: 1,
+                                                      row: widget.row + 4);
+                                              huakor = cell.value;
+                                              final cell2 = await sheet.cells
+                                                  .cell(
+                                                      column: 4,
+                                                      row: widget.row + 4);
+                                              samakan = cell2.value;
+                                              final cell3 = await sheet.cells
+                                                  .cell(
+                                                      column: 5,
+                                                      row: widget.row + 4);
+                                              kampud = cell3.value;
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          GraphPage(
+                                                            para: widget.para,
+                                                            p: 2,
+                                                            row: widget.row + 4,
+                                                            huakor: huakor,
+                                                            samakan: samakan,
+                                                            kampud: kampud,
+                                                          ))).then((result) {
+                                                Navigator.of(context).pop();
+                                              });
+                                              loading = false;
+                                              _visible = false;
+                                              setState(() {
+                                                glowing1 = true;
+                                                scale1 = 1.1;
+                                              });
+                                            },
+                                            onCancelButtonPressed: () async {
+                                              loading = true;
+                                              _visible = true;
+                                              setState(() {});
+                                              final gsheets =
+                                                  GSheets(_credentials);
+                                              final _sheet = await gsheets
+                                                  .spreadsheet(_spreadsheetId);
+                                              var sheet = _sheet
+                                                  .worksheetByTitle('Page1');
+                                              final cell = await sheet!.cells
+                                                  .cell(
+                                                      column: 1,
+                                                      row: widget.row + 2);
+                                              huakor = cell.value;
+                                              final cell2 = await sheet.cells
+                                                  .cell(
+                                                      column: 4,
+                                                      row: widget.row + 2);
+                                              samakan = cell2.value;
+                                              final cell3 = await sheet.cells
+                                                  .cell(
+                                                      column: 5,
+                                                      row: widget.row + 2);
+                                              kampud = cell3.value;
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          GraphPage(
+                                                            para: widget.para,
+                                                            p: 1,
+                                                            row: widget.row + 2,
+                                                            huakor: huakor,
+                                                            samakan: samakan,
+                                                            kampud: kampud,
+                                                          ))).then((result) {
+                                                Navigator.of(context).pop();
+                                              });
+                                              loading = false;
+                                              _visible = false;
+                                              setState(() {
+                                                glowing1 = true;
+                                                scale1 = 1.1;
+                                              });
+                                            },
+                                          ));
                                 },
                                 child: AnimatedContainer(
                                   // transform: Matrix4.identity()..scale(scale1),
@@ -211,7 +305,9 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                                         size: 90,
                                       ),
                                       Text(
-                                        "  Infected - Cured",
+                                        widget.para == 2
+                                            ? "  Infected - Cured"
+                                            : " Infected - Death - Cured",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -232,35 +328,159 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                                   });
                                 },
                                 onTapDown: (val) async {
-                                  _visible = true;
-                                  final gsheets = GSheets(_credentials);
-                                  final _sheet =
-                                      await gsheets.spreadsheet(_spreadsheetId);
-                                  var sheet = _sheet.worksheetByTitle('Page1');
-                                  final cell = await sheet!.cells
-                                      .cell(column: 1, row: widget.row + 6);
-                                  huakor = cell.value;
-                                  final cell2 = await sheet.cells
-                                      .cell(column: 4, row: widget.row + 6);
-                                  samakan = cell2.value;
-                                  final cell3 = await sheet.cells
-                                      .cell(column: 5, row: widget.row + 6);
-                                  kampud = cell3.value;
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => GraphPage(
-                                                p: widget.p,
-                                                row: widget.row + 6,
-                                                huakor: huakor,
-                                                samakan: samakan,
-                                                kampud: kampud,
-                                              )));
-                                  _visible = false;
-                                  setState(() {
-                                    glowing2 = true;
-                                    scale2 = 1.1;
-                                  });
+                                  if (widget.para == 3) {
+                                    _visible = true;
+                                    final gsheets = GSheets(_credentials);
+                                    final _sheet = await gsheets
+                                        .spreadsheet(_spreadsheetId);
+                                    var sheet =
+                                        _sheet.worksheetByTitle('Page1');
+                                    final cell = await sheet!.cells
+                                        .cell(column: 1, row: widget.row + 6);
+                                    huakor = cell.value;
+                                    final cell2 = await sheet.cells
+                                        .cell(column: 4, row: widget.row + 6);
+                                    samakan = cell2.value;
+                                    final cell3 = await sheet.cells
+                                        .cell(column: 5, row: widget.row + 6);
+                                    kampud = cell3.value;
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => GraphPage(
+                                                  para: widget.para,
+                                                  p: 1,
+                                                  row: widget.row + 6,
+                                                  huakor: huakor,
+                                                  samakan: samakan,
+                                                  kampud: kampud,
+                                                )));
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => AssetGiffyDialog(
+                                              image: Image.asset(
+                                                "assets/giphy3.gif",
+                                              ),
+                                              title: Text(
+                                                'เลือก phase',
+                                                style: TextStyle(
+                                                    fontSize: 30.0,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                              description: Text(
+                                                'Phase 1 : ช่วง ม.ค. - มิ.ย.64\nPhase 2 : ช่วง มิ.ย. - ต.ค. 64',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                  fontSize: 20.0,
+                                                ),
+                                              ),
+                                              entryAnimation:
+                                                  EntryAnimation.DEFAULT,
+                                              buttonCancelText: Text("Phase 1"),
+                                              buttonCancelColor: Colors.green,
+                                              buttonOkColor: Colors.green,
+                                              buttonOkText: Text("Phase 2"),
+                                              onOkButtonPressed: () async {
+                                                loading = true;
+                                                _visible = true;
+                                                setState(() {});
+                                                final gsheets =
+                                                    GSheets(_credentials);
+                                                final _sheet =
+                                                    await gsheets.spreadsheet(
+                                                        _spreadsheetId);
+                                                var sheet = _sheet
+                                                    .worksheetByTitle('Page1');
+                                                final cell = await sheet!.cells
+                                                    .cell(
+                                                        column: 1,
+                                                        row: widget.row + 8);
+                                                huakor = cell.value;
+                                                final cell2 = await sheet.cells
+                                                    .cell(
+                                                        column: 4,
+                                                        row: widget.row + 8);
+                                                samakan = cell2.value;
+                                                final cell3 = await sheet.cells
+                                                    .cell(
+                                                        column: 5,
+                                                        row: widget.row + 8);
+                                                kampud = cell3.value;
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            GraphPage(
+                                                              para: widget.para,
+                                                              p: 2,
+                                                              row: widget.row +
+                                                                  8,
+                                                              huakor: huakor,
+                                                              samakan: samakan,
+                                                              kampud: kampud,
+                                                            ))).then((result) {
+                                                  Navigator.of(context).pop();
+                                                });
+                                                loading = false;
+                                                _visible = false;
+                                                setState(() {
+                                                  glowing1 = true;
+                                                  scale1 = 1.1;
+                                                });
+                                              },
+                                              onCancelButtonPressed: () async {
+                                                loading = true;
+                                                _visible = true;
+                                                setState(() {});
+                                                final gsheets =
+                                                    GSheets(_credentials);
+                                                final _sheet =
+                                                    await gsheets.spreadsheet(
+                                                        _spreadsheetId);
+                                                var sheet = _sheet
+                                                    .worksheetByTitle('Page1');
+                                                final cell = await sheet!.cells
+                                                    .cell(
+                                                        column: 1,
+                                                        row: widget.row + 6);
+                                                huakor = cell.value;
+                                                final cell2 = await sheet.cells
+                                                    .cell(
+                                                        column: 4,
+                                                        row: widget.row + 6);
+                                                samakan = cell2.value;
+                                                final cell3 = await sheet.cells
+                                                    .cell(
+                                                        column: 5,
+                                                        row: widget.row + 6);
+                                                kampud = cell3.value;
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            GraphPage(
+                                                              para: widget.para,
+                                                              p: 1,
+                                                              row: widget.row +
+                                                                  6,
+                                                              huakor: huakor,
+                                                              samakan: samakan,
+                                                              kampud: kampud,
+                                                            ))).then((result) {
+                                                  Navigator.of(context).pop();
+                                                });
+                                                // Navigator.pop(context);
+                                                loading = false;
+                                                _visible = false;
+                                                setState(() {
+                                                  glowing1 = true;
+                                                  scale1 = 1.1;
+                                                });
+                                              },
+                                            ));
+                                  }
                                 },
                                 child: AnimatedContainer(
                                   duration: Duration(milliseconds: 200),
@@ -316,7 +536,9 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                                         size: 90,
                                       ),
                                       Text(
-                                        "  Infected - Death",
+                                        widget.para == 2
+                                            ? "  Infected - Death"
+                                            : " Infected - Vaccined - Cured",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -366,7 +588,8 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => GraphPage(
-                                                p: widget.p,
+                                                para: widget.para,
+                                                p: 1,
                                                 row: widget.row + 10,
                                                 huakor: huakor,
                                                 samakan: samakan,
@@ -433,7 +656,9 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                                         size: 90,
                                       ),
                                       Text(
-                                        "  Vaccined - Infected",
+                                        widget.para == 2
+                                            ? "  Vaccined - Infected"
+                                            : "Infected - Vaccined - Death",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -473,7 +698,8 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => GraphPage(
-                                                p: widget.p,
+                                                para: widget.para,
+                                                p: 1,
                                                 row: widget.row + 14,
                                                 huakor: huakor,
                                                 samakan: samakan,
@@ -486,7 +712,6 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                                   });
                                 },
                                 child: AnimatedContainer(
-                                  // transform: Matrix4.identity()..scale(scale1),
                                   duration: Duration(milliseconds: 200),
                                   height: 200,
                                   width: 220,
@@ -540,7 +765,9 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                                         size: 90,
                                       ),
                                       Text(
-                                        "  Vaccined - Cured",
+                                        widget.para == 2
+                                            ? "  Vaccined - Cured"
+                                            : " Vaccined - Death - Cured",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -557,127 +784,111 @@ class _MenuPageState extends State<MenuPage> with TickerProviderStateMixin {
                       ],
                     ),
                     Spacer(),
-                    FadeTransition(
-                      opacity: animation,
-                      child: GestureDetector(
-                        onTapUp: (val) {
-                          setState(() {
-                            glowing5 = false;
-                            scale5 = 1.0;
-                          });
-                        },
-                        onTapDown: (val) async {
-                          _visible = true;
-                          final gsheets = GSheets(_credentials);
-                          final _sheet =
-                              await gsheets.spreadsheet(_spreadsheetId);
-                          var sheet = _sheet.worksheetByTitle('Page1');
-                          final cell = await sheet!.cells
-                              .cell(column: 1, row: widget.row + 18);
-                          huakor = cell.value;
-                          final cell2 = await sheet.cells
-                              .cell(column: 4, row: widget.row + 18);
-                          samakan = cell2.value;
-                          final cell3 = await sheet.cells
-                              .cell(column: 5, row: widget.row + 18);
-                          kampud = cell3.value;
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => GraphPage(
-                                        p: widget.p,
-                                        row: widget.row + 18,
-                                        huakor: huakor,
-                                        samakan: samakan,
-                                        kampud: kampud,
-                                      )));
-                          _visible = false;
-                          setState(() {
-                            glowing5 = true;
-                            scale5 = 1.1;
-                          });
-                        },
-                        child: AnimatedContainer(
-                          // transform: Matrix4.identity()..scale(scale1),
-                          duration: Duration(milliseconds: 200),
-                          height: 200,
-                          width: 220,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
-                              gradient: LinearGradient(
-                                colors: [
-                                  widget.color1,
-                                  widget.color2,
-                                ],
-                              ),
-                              boxShadow: glowing5
-                                  ? [
-                                      BoxShadow(
-                                        color: widget.color1.withOpacity(0.6),
-                                        spreadRadius: 1,
-                                        blurRadius: 16,
-                                        offset: Offset(-8, 0),
-                                      ),
-                                      BoxShadow(
-                                        color: widget.color2.withOpacity(0.6),
-                                        spreadRadius: 1,
-                                        blurRadius: 16,
-                                        offset: Offset(8, 0),
-                                      ),
-                                      BoxShadow(
-                                        color: widget.color1.withOpacity(0.2),
-                                        spreadRadius: 16,
-                                        blurRadius: 32,
-                                        offset: Offset(-8, 0),
-                                      ),
-                                      BoxShadow(
-                                        color: widget.color2.withOpacity(0.2),
-                                        spreadRadius: 16,
-                                        blurRadius: 32,
-                                        offset: Offset(8, 0),
-                                      )
-                                    ]
-                                  : []),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            // ignore: prefer_const_literals_to_create_immutables
-                            children: [
-                              Icon(
-                                Icons.medical_services,
-                                color: Colors.white,
-                                size: 90,
-                              ),
-                              Text(
-                                "  Vaccined - Death",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
-                              )
-                            ],
+                    if (widget.para == 2)
+                      FadeTransition(
+                        opacity: animation,
+                        child: GestureDetector(
+                          onTapUp: (val) {
+                            setState(() {
+                              glowing5 = false;
+                              scale5 = 1.0;
+                            });
+                          },
+                          onTapDown: (val) async {
+                            _visible = true;
+                            final gsheets = GSheets(_credentials);
+                            final _sheet =
+                                await gsheets.spreadsheet(_spreadsheetId);
+                            var sheet = _sheet.worksheetByTitle('Page1');
+                            final cell = await sheet!.cells
+                                .cell(column: 1, row: widget.row + 18);
+                            huakor = cell.value;
+                            final cell2 = await sheet.cells
+                                .cell(column: 4, row: widget.row + 18);
+                            samakan = cell2.value;
+                            final cell3 = await sheet.cells
+                                .cell(column: 5, row: widget.row + 18);
+                            kampud = cell3.value;
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GraphPage(
+                                          para: widget.para,
+                                          p: 1,
+                                          row: widget.row + 18,
+                                          huakor: huakor,
+                                          samakan: samakan,
+                                          kampud: kampud,
+                                        )));
+                            _visible = false;
+                            setState(() {
+                              glowing5 = true;
+                              scale5 = 1.1;
+                            });
+                          },
+                          child: AnimatedContainer(
+                            // transform: Matrix4.identity()..scale(scale1),
+                            duration: Duration(milliseconds: 200),
+                            height: 200,
+                            width: 220,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    widget.color1,
+                                    widget.color2,
+                                  ],
+                                ),
+                                boxShadow: glowing5
+                                    ? [
+                                        BoxShadow(
+                                          color: widget.color1.withOpacity(0.6),
+                                          spreadRadius: 1,
+                                          blurRadius: 16,
+                                          offset: Offset(-8, 0),
+                                        ),
+                                        BoxShadow(
+                                          color: widget.color2.withOpacity(0.6),
+                                          spreadRadius: 1,
+                                          blurRadius: 16,
+                                          offset: Offset(8, 0),
+                                        ),
+                                        BoxShadow(
+                                          color: widget.color1.withOpacity(0.2),
+                                          spreadRadius: 16,
+                                          blurRadius: 32,
+                                          offset: Offset(-8, 0),
+                                        ),
+                                        BoxShadow(
+                                          color: widget.color2.withOpacity(0.2),
+                                          spreadRadius: 16,
+                                          blurRadius: 32,
+                                          offset: Offset(8, 0),
+                                        )
+                                      ]
+                                    : []),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              // ignore: prefer_const_literals_to_create_immutables
+                              children: [
+                                Icon(
+                                  Icons.medical_services,
+                                  color: Colors.white,
+                                  size: 90,
+                                ),
+                                Text(
+                                  "  Vaccined - Death",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
                     Spacer(),
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      Opacity(
-                        opacity: _visible ? 1.0 : 0.0,
-                        child: Image.asset(
-                          "assets/Animation.gif",
-                          width: 70,
-                          height: 70,
-                        ),
-                      ),
-                      Opacity(
-                        opacity: 0.0,
-                        child: Image.asset(
-                          "assets/Animation.gif",
-                          width: 35,
-                          height: 35,
-                        ),
-                      ),
-                    ]),
                   ],
                 ),
               ),

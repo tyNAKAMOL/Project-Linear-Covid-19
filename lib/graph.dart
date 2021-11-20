@@ -1,10 +1,11 @@
-// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, use_key_in_widget_constructors, must_call_super
+// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, use_key_in_widget_constructors, must_call_super, sized_box_for_whitespace, deprecated_member_use, unnecessary_brace_in_string_interps, curly_braces_in_flow_control_structures
 
 import 'dart:math';
 import 'package:covid_app/Menu.dart';
 import 'package:flutter/material.dart';
 import 'package:gsheets/gsheets.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 
 const _credentials = r'''
 {
@@ -27,13 +28,20 @@ bool _visible = false;
 String output1 = "";
 String output2 = "";
 String output3 = "";
+String output4 = "";
 String data = "";
+String data2 = "";
+int parapapa = 0;
+var _controller = TextEditingController();
+var _controller2 = TextEditingController();
 
 class GraphPage extends StatefulWidget {
   final int row;
   final int p;
+  final int para;
   const GraphPage(
-      {required this.p,
+      {required this.para,
+      required this.p,
       required this.row,
       required String huakor,
       required String samakan,
@@ -44,8 +52,37 @@ class GraphPage extends StatefulWidget {
 }
 
 class _GraphPageState extends State<GraphPage> {
+  late String name1 = "";
+  late String name2 = "";
   late String t;
   // ignore: unused_field
+  @override
+  void initState() {
+    parapapa = widget.para;
+    if (widget.row == 2 ||
+        widget.row == 4 ||
+        widget.row == 6 ||
+        widget.row == 8 ||
+        widget.row == 22 ||
+        widget.row == 24 ||
+        widget.row == 26 ||
+        widget.row == 30) {
+      name1 = "Infected";
+    }
+    if (widget.row == 10 ||
+        widget.row == 14 ||
+        widget.row == 18 ||
+        widget.row == 34) {
+      name1 = "Vaccined";
+    }
+    if (widget.row == 22 || widget.row == 24 || widget.row == 34) {
+      name2 = "Death";
+    } else {
+      name2 = "Vaccined";
+    }
+
+    super.initState();
+  }
 
   createAlertDialog(BuildContext context) {
     return showDialog(
@@ -76,25 +113,32 @@ class _GraphPageState extends State<GraphPage> {
                   elevation: 5.0,
                   child: Text('Enter'),
                   onPressed: () {
-                    InputData(data.toString(), widget.row);
-                    Future.delayed(const Duration(milliseconds: 2000),
-                        () async {
-                      _visible = true;
-                      Navigator.pop(context);
-                      final gsheets = GSheets(_credentials);
-                      final _sheet = await gsheets.spreadsheet(_spreadsheetId);
-                      var sheet = _sheet.worksheetByTitle('Page1');
-                      final cell1 =
-                          await sheet!.cells.cell(column: 6, row: widget.row);
-                      output1 = cell1.value;
-                      final cell2 =
-                          await sheet.cells.cell(column: 7, row: widget.row);
-                      output2 = cell2.value;
-                      final cell3 =
-                          await sheet.cells.cell(column: 3, row: widget.row);
-                      output3 = cell3.value;
-                      setState(() {});
-                    });
+                    showDialog(
+                        context: context,
+                        builder: (_) => FlareGiffyDialog(
+                              flarePath: 'assets/space_demo.flr',
+                              flareAnimation: 'loading',
+                              title: Text(
+                                'เลือก phase',
+                                style: TextStyle(
+                                    fontSize: 30.0,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              description: Text(
+                                'Phase 1 : ช่วง ม.ค. - มิ.ย.64\nPhase 2 : ช่วง ก.ค. - ต.ค. 64',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                              entryAnimation: EntryAnimation.DEFAULT,
+                              buttonCancelText: Text("Phase 1"),
+                              buttonCancelColor: Colors.green,
+                              buttonOkColor: Colors.green,
+                              buttonOkText: Text("Phase 2"),
+                              onOkButtonPressed: () {},
+                              onCancelButtonPressed: () {},
+                            ));
                   }),
             ],
           );
@@ -114,7 +158,10 @@ class _GraphPageState extends State<GraphPage> {
               output1 = "";
               output2 = "";
               output3 = "";
+              output4 = "";
               data = "";
+              _controller.clear();
+              _controller2.clear();
               _visible = false;
               Navigator.pop(context);
             },
@@ -136,19 +183,16 @@ class _GraphPageState extends State<GraphPage> {
               // ignore: avoid_unnecessary_containers
               child: Container(
                 color: Colors.white.withOpacity(0.5),
-                width: 800,
+                width: 850,
                 height: 800,
                 child: Column(
                   children: [
                     Spacer(),
-                    // Wrap(spacing: 20, children: <Widget>[
                     Center(
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            // Wrap(
-                            // children: <Widget>[
                             // ignore: avoid_unnecessary_containers
                             Container(
                               decoration: BoxDecoration(
@@ -172,27 +216,17 @@ class _GraphPageState extends State<GraphPage> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
                                 child: Image.asset(
-                                  "assets/P${widget.p}_ROW${widget.row}.png",
-                                  // height: 500,
-                                ),
+                                    "assets/X/${widget.para}P${widget.p}_ROW${widget.row}.png"),
                               ),
-                              // height: 500,
-                              // decoration: BoxDecoration(
-                              //   color: Colors.amber[300],
-                              //   borderRadius: BorderRadius.circular(40),
-                              // ),
-                              // child: Image.asset(
-                              //     "assets/P${widget.p}_ROW${widget.row}.png"),
+                              height: parapapa == 2 ? 450 : 400,
                             ),
-                            // Image.asset(
-                            //     "assets/P${widget.p}_ROW${widget.row}.png"),
-                            // ],
                           ]),
                     ),
                     // Spacer(),
                     Center(
                       child: Container(
-                        height: 150,
+                        // color: Colors.amber,
+                        height: 120,
                         width: 850,
                         child: Center(
                           child: Column(
@@ -229,29 +263,125 @@ class _GraphPageState extends State<GraphPage> {
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFF020546)),
                               )),
-                              Center(
-                                  // ignore: unnecessary_brace_in_string_interps
-                                  child: Opacity(
-                                opacity: _visible ? 1.0 : 0.0,
-                                child: Text(
-                                  "${output1} ${data} คน ${output2} ${output3} คน",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                ),
-                              )),
                             ],
                           ),
                         ),
                       ),
                     ),
+                    // Spacer(),
+                    Container(
+                      width: 300.0,
+                      // height: 100.0,
+                      // padding: const EdgeInsets.all(1.0),
+                      // child: Row(children: [
+                      child: TextField(
+                        controller: _controller,
+                        keyboardType: TextInputType.numberWithOptions(
+                            signed: false, decimal: false),
+                        cursorColor: Colors.white,
+                        decoration: InputDecoration(
+                          fillColor: Colors.deepPurple,
+                          // filled: true,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color(0xFF020546), width: 3.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color(0xFF020546), width: 3.0),
+                          ),
+                          labelText: name1,
+                          labelStyle: TextStyle(color: Color(0xFF020546)),
+                          hintText:
+                              "Insert your ${name1} here", //"Insert your Data here"
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            data = value.trim(); // ตัด spacebar
+                          });
+                        },
+                      ),
+                    ),
+                    if (widget.para == 3)
+                      SizedBox(
+                        height: 10,
+                      ),
+                    if (widget.para == 3)
+                      Container(
+                        width: 300.0,
+                        // height: 100.0,
+                        // padding: const EdgeInsets.all(1.0),
+                        // child: Row(children: [
+                        child: TextField(
+                          controller: _controller2,
+                          keyboardType: TextInputType.numberWithOptions(
+                              signed: false, decimal: false),
+                          cursorColor: Colors.white,
+                          decoration: InputDecoration(
+                            fillColor: Colors.deepPurple,
+                            // filled: true,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xFF020546), width: 3.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xFF020546), width: 3.0),
+                            ),
+                            labelText: name2,
+                            labelStyle: TextStyle(color: Color(0xFF020546)),
+                            hintText: "Insert your ${name2}} here",
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              data2 = value.trim(); // ตัด spacebar
+                            });
+                          },
+                        ),
+                      ),
                     Spacer(),
                     Center(
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          OutputData(widget.row);
-                          createAlertDialog(context);
+                        onPressed: () async {
+                          _visible = true;
+                          setState(() {});
+                          InputData(data.toString(), widget.row);
+                          if (widget.para == 3)
+                            InputData(data2.toString(), widget.row + 1);
+                          Future.delayed(const Duration(milliseconds: 2000),
+                              () async {
+                            // Navigator.pop(context)
+                            final gsheets = GSheets(_credentials);
+                            final _sheet =
+                                await gsheets.spreadsheet(_spreadsheetId);
+                            var sheet = _sheet.worksheetByTitle('Page1');
+                            final cell1 = await sheet!.cells
+                                .cell(column: 6, row: widget.row);
+                            output1 = cell1.value;
+                            final cell2 = await sheet.cells
+                                .cell(column: 7, row: widget.row);
+                            output2 = cell2.value;
+                            final cell3 = await sheet.cells.cell(
+                                column: 3,
+                                row: widget.para == 3
+                                    ? widget.row
+                                    : widget.row + 35);
+                            output3 = cell3.value;
+                            if (widget.para == 3) {
+                              final cell4 = await sheet.cells
+                                  .cell(column: 6, row: widget.row + 1);
+                              output4 = cell4.value;
+                            }
+                            _visible = false;
+                            setState(() {});
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AdvanceCustomAlert();
+                                });
+                          });
+
+                          // createAlertDialog(context);
                         },
                         icon: Icon(
                           Icons.add_box_outlined,
@@ -263,12 +393,20 @@ class _GraphPageState extends State<GraphPage> {
                               borderRadius: BorderRadius.circular(20)),
                         ),
                         label: Text(
-                          "Input Data",
+                          "Submit",
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.white,
                           ),
                         ),
+                      ),
+                    ),
+                    Opacity(
+                      opacity: _visible ? 1.0 : 0.0,
+                      child: Image.asset(
+                        "assets/Animation.gif",
+                        width: 40,
+                        height: 40,
                       ),
                     ),
                     Spacer(),
@@ -295,4 +433,76 @@ void OutputData(int roll) async {
   var sheet = _sheet.worksheetByTitle('Page1');
   final cell = await sheet!.cells.cell(column: 3, row: roll);
   value = cell.value;
+}
+
+class AdvanceCustomAlert extends StatelessWidget {
+  // const AdvanceCustomAlert(
+  //     {required x,});
+  const AdvanceCustomAlert({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+        child: Stack(
+          overflow: Overflow.visible,
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: 350,
+              width: 700,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
+                child: Column(children: [
+                  Text(
+                    'ผลลัพธ์',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Center(
+                    child: Text(
+                      parapapa == 2
+                          ? '${output1} ${data} คน \n${output2} ${output3} คน'
+                          : '${output1} ${data} คน ${output4} ${data2} คน \n${output2} ${output3} คน',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 60,
+                  ),
+                  // ignore: deprecated_member_use
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _controller.clear();
+                      _controller2.clear();
+                      data = "";
+                      data2 = "";
+                    },
+                    color: Colors.green,
+                    child: Text(
+                      'Okay',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                ]),
+              ),
+            ),
+            Positioned(
+                top: -60,
+                child: CircleAvatar(
+                  backgroundColor: Colors.orange,
+                  radius: 60,
+                  child: Icon(
+                    Icons.campaign,
+                    color: Colors.white,
+                    size: 70,
+                  ),
+                )),
+          ],
+        ));
+  }
 }

@@ -14,8 +14,6 @@ class HomePage extends StatefulWidget {
       {this.color1 = const Color(0xFFEC7063),
       Color this.color2 = const Color(0xFF9B59B6)});
 
-  // const HomePage({Key? key}) : super(key: key);
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -57,13 +55,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AnimatedImage(),
-                  // FadeTransition(
-                  //   opacity: animation,
-                  //   child: Image.asset(
-                  //     "assets/Logo-Covid19.png",
-                  //     fit: BoxFit.cover,
-                  //   ),
-                  // ),
                   FadeTransition(
                     opacity: animation,
                     child: GestureDetector(
@@ -77,12 +68,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MenuPage(p: 0, row: 0)));
-                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        //   builder: (context) {
-                        //     return MenuPage();
-                        //   },
-                        // ));
+                                builder: (context) =>
+                                    MenuPage(para: 2, p: 0, row: 0)));
+
                         setState(() {
                           glowing1 = true;
                           scale1 = 1.1;
@@ -163,7 +151,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MenuPage(p: 0, row: 10)));
+                                builder: (context) =>
+                                    MenuPage(para: 3, p: 0, row: 20)));
                         setState(() {
                           glowing2 = true;
                           scale2 = 1.1;

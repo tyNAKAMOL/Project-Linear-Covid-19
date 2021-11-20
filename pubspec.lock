@@ -99,6 +99,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.2"
+  flare_dart:
+    dependency: transitive
+    description:
+      name: flare_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.4"
+  flare_flutter:
+    dependency: transitive
+    description:
+      name: flare_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.6"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -123,6 +137,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1+4"
+  giffy_dialog:
+    dependency: "direct main"
+    description:
+      name: giffy_dialog
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.8.0"
   google_fonts:
     dependency: "direct main"
     description:
@@ -166,7 +187,7 @@ packages:
     source: hosted
     version: "4.0.0"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"
@@ -256,6 +277,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.4"
+  pattern_formatter:
+    dependency: "direct main"
+    description:
+      name: pattern_formatter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   platform:
     dependency: transitive
     description:
