@@ -7,7 +7,7 @@
 ● Android studio
 
 
-การใช้งาน (A 5-step Process)
+การใช้งาน (4-step Process)
 
 ⭐ เลือกจำนวนตัวแปรในสมการ (2 ตัวแปร , 3 ตัวแปร)
 
