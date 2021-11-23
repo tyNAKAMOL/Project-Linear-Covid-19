@@ -1,16 +1,19 @@
-# covid_app
+# covid_app 👽👻💀
 
-A new Flutter project.
+👇 โปรแกรมในการใช้งาน 👇
 
-## Getting Started
+● Visual Studio Code
 
-This project is a starting point for a Flutter application.
+● Android studio
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+การใช้งาน (4-step Process)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+⭐ เลือกจำนวนตัวแปรในสมการ (2 ตัวแปร , 3 ตัวแปร)
+
+⭐ เลือกความสัมพันธ์
+
+⭐ เลือก Phase ที่ต้องการหาแนวโน้ม
+
+⭐ ป้อนข้อมูล
+
