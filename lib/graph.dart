@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:covid_app/Menu.dart';
 import 'package:flutter/material.dart';
 import 'package:gsheets/gsheets.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 
@@ -450,7 +451,7 @@ class AdvanceCustomAlert extends StatelessWidget {
           children: [
             Container(
               height: 350,
-              width: 700,
+              width: 750,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
                 child: Column(children: [
@@ -464,8 +465,8 @@ class AdvanceCustomAlert extends StatelessWidget {
                   Center(
                     child: Text(
                       parapapa == 2
-                          ? '${output1} ${data} คน \n${output2} ${output3} คน'
-                          : '${output1} ${data} คน ${output4} ${data2} คน \n${output2} ${output3} คน',
+                          ? '${output1} ${NumberFormat("#,###").format(int.parse(data))} คน \n${output2} ${output3} คน'
+                          : '${output1} ${NumberFormat("#,###").format(int.parse(data))} คน ${output4} ${NumberFormat("#,###").format(int.parse(data2))} คน \n${output2} ${output3} คน',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 20),
                     ),
